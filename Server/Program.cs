@@ -1,4 +1,8 @@
 
+using Microsoft.EntityFrameworkCore;
+using ServerLibrary.Data;
+using ServerLibrary.Helpers;
+
 namespace Server
 {
     public class Program
@@ -14,6 +18,15 @@ namespace Server
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            //starting
+
+            builder.Services.AddDbContext<AppDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ??
+                    throw new InvalidOperationException("Sorry, Your connection is not found..."));
+            });
+
+            builder.Services.Configure<JwtSection>(builder.Configuration.GetSection("JwtSection"));
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
